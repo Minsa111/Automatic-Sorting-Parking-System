@@ -19,7 +19,7 @@ int main(){
     system("cls");
     printf("\nWelcome To car parking\n\nPress '1' Login.\nPress '2' Create.\n"); 
     printf("\nInput : ");
-    
+    printf("kontlo");
     switch(getch()){
         case'1': 
             system("cls");
