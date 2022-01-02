@@ -19,22 +19,43 @@ int i ,j ,k ,count;
 int main(){
     home :
     system("cls");
-    printf("\nWelcome To car parking\n\nPress '1' Create.\nPress '2' Login.\n"); 
+    printf("===Welcome To car parking===\n\nPress '1' Register.\nPress '2' Login.\n"); 
     printf("\nInput : ");
     switch(getch()){
         case'1': 
             system("cls");
-            create:
+            reg:
             exist = false;
             j=0;
             db_person++;
             printf("============================ ");
-            printf("\n\t== Create == ");
+            printf("\n\t== Register == ");
             printf("\n============================ \n");
             printf("\nEnter Username\t\t\t: "); scanf("%s", input_user);
+            for(i=1; i<=db_person ; i++){
+                if(strcmp(input_user, username[i])==0){
+                    exist=true;
+                    break;
+                }
+            }
+                if(exist==true){
+
+                    printf("=== Sorry, username is not available ===");
+                    printf("\n\nDo you want to try again?(y/n)");
+                    switch(getch()){
+                        case'y':
+                        case'Y':
+                            goto reg;
+                        break;
+                        case'n':
+                        case'N':
+                            goto home;
+                        break;
+                    }
+                }
             plat_input:
             exist = false;
-            printf("\nEnter Plat number\t\t:"); scanf("%[^\n]s", input_plat);
+            printf("\nEnter Car Plat number\t\t:"); scanf("%[^\n]s", input_plat);
                 strupr(input_plat);
                 for(i=0 ; i<db_person ; i++){
                     if (strcmp(input_plat, plat[i])==0){
@@ -58,7 +79,7 @@ int main(){
                             default:
                         printf("\n\nPlease enter a valid answer!");
                         system("pause");
-                    goto create;
+                    goto reg;
                         }
                 }
                 count = strlen(input_plat);
@@ -83,7 +104,7 @@ int main(){
                             default:
                         printf("\n\nPlease enter a valid answer!");
                         system("pause");
-                    goto create;
+                    goto reg;
                 }}
             printf("\nEnter Pass\t\t\t: "); scanf("%s", input_pass);
 
@@ -99,16 +120,19 @@ int main(){
             printf("=========================== ");
             printf("\n\t== Login == ");
             printf("\n=========================== \n");
-            printf("\nUsername\t: "); scanf("%s", username);
-            printf("\nPassword\t: "); scanf("%s", password);
-            printf("\nPlat Number\t:"); scanf("%s", plat);
+            printf("\nUsername\t: "); scanf("%s", input_user);
+            printf("\nPassword\t: "); scanf("%s", input_pass);
+            printf("\nCar Plat Number\t:"); scanf("%[^\n]", input_plat);
+            strupr(input_plat);
+            
             printf("\n========================== \n");
         break;
         case'6':
             return 0;
         break;
         default :
-            printf("\nWrong...");
+            printf("\n=== Please Input a valid answer!!! ===");
+            system("pause");
             goto home;
 
     }
