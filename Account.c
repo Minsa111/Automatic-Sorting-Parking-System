@@ -145,7 +145,6 @@ int main(){
             fclose(in_data);
             printf("\n========================== \n");
             printf("Data has been succesfully registered!\n");
-
             printf("Now Login with User and Password\n");
             printf("\nPress any key to continue..."); 
             getch();
