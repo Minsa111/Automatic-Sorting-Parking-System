@@ -112,7 +112,7 @@ int main(){
                 strupr(input_plat);
                     count = strlen(input_plat);
                         for(i=0 ; i<=count ; i++){
-                            if( !(input_plat[i]>='A' && input_plat[i]<='Z') && !(input_plat[i]>='0' && input_plat[i]<='9') && !(input_plat[i]=='\0')){
+                            if( !(input_plat[i]>='A' && input_plat[i]<='Z') && !(input_plat[i]>='0' && input_plat[i]<='9') && !(input_plat[i]=='\0') && !(input_plat[i]==32)){
                                     j++;
                                     break;
                             }
@@ -198,7 +198,7 @@ int main(){
             return 0;
         break;
         default :
-            printf("\n=== Please Input a valid answer!!! ===");
+            printf("\n=== Please Input a valid answer!!! ===\n");
             system("pause");
             goto home;
 
