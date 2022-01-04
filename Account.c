@@ -8,7 +8,7 @@
 int db_person=0;
 char pil;
 char acc[99];
-char username['0'][99], password['0'][99]; plat['0'][99];
+char username['0'][99], password['0'][99], plat['0'][99];
 char input_plat[99], input_user[99], input_pass[99];
 
 bool user_allow = false;
@@ -59,10 +59,10 @@ int main(){
         }
     home :
     exist=false;
-    system("cls");
     count = 20-db_person;
+    system("cls");
     printf("===Welcome To car parking===");
-    printf("Car slot available: %i\n\n", count);
+    printf("\n\nCar slot available: %i\n\n", count);
     printf("Press '1' to Register.\nPress '2' to Login.\n");
     printf("\nInput : ");
     switch(getch()){
@@ -185,6 +185,16 @@ int main(){
                 if(i==j){
                     printf("Welcome %s", username);
                 }
+                else if(i!=j){
+                    printf("Sorry, wrong username or password!\n\n");
+                    system("pause");
+                    goto home;
+                }
+            }
+            else if(pass_exist==false && user_exist==true){
+                printf("Sorry %s, Wrong password\n\n", username[i]);
+                system("pause");
+                goto home;
             }
             else{
                 printf("Sorry, wrong username or password!");
