@@ -12,8 +12,6 @@ char input_user[99], input_pass[99], input_plat[99];
 bool duplicate, asc;
 bool user_is_admin, user_allow;
 
-void c_acc(); void l_acc();
-
 int main(){
     account :
     system("cls");
