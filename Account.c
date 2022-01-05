@@ -10,12 +10,15 @@ char pil;
 char acc[99];
 char username['0'][99], password['0'][99], plat['0'][99];
 char input_plat[99], input_user[99], input_pass[99];
+int curr_car;
 
 bool user_allow = false;
 bool user_exist = false;
 bool pass_exist = false;
 bool exist=false;
 bool inputted=true;
+bool input_space=false;
+bool logged=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
 FILE*in_data;
@@ -32,8 +35,6 @@ void delay(int number_of_seconds)
     // looping till required time is not achieved
     while (clock() < start_time + milli_seconds);
 }
-
-
 
 int main(){
         in_data = fopen("db_car.txt", "r");
@@ -76,13 +77,27 @@ int main(){
                 goto home;
             }
             reg:
+            input_space=false;
             exist = false;
             j=0;
             db_person++;
-            printf("============================ ");
-            printf("\n\t== Register == ");
-            printf("\n============================ \n");
-            printf("\nEnter Username\t\t\t: "); scanf("%s", input_user);
+                printf("============================ ");
+                printf("\n\t== Register == ");
+                printf("\n============================ \n");
+                printf("\nEnter Username\t\t\t: "); scanf("%s", input_user);
+
+            for(i=0 ; i<=count ; i++){
+                if((input_plat[i]==32)){
+                    input_space=true;
+                    break;
+                }
+            }
+            if (input_space==true){
+                printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
+                system ("pause");
+                db_person--;
+                goto home;
+            }
 
             // nyari kalo username udah ada apa belum.
                 for(i=1; i<=db_person ; i++){
@@ -107,6 +122,8 @@ int main(){
                     }
                 }
                 reg_plat:
+                exist = false;
+                j=0;
                 printf("\nEnter car plat number\t\t: ");
                 scanf(" %[^\n]s", input_plat);
                 strupr(input_plat);
@@ -136,7 +153,7 @@ int main(){
                             system("pause");
                         goto reg;
                     }}
-            printf("\nEnter Pass\t\t\t: "); scanf("%s", input_pass);
+            printf("\nEnter Pass\t\t\t: "); scanf("%[^\n]s", input_pass);
                 strcpy (username[db_person],input_user);
                 strcpy (plat[db_person],input_plat);
                 strcpy (password[db_person],input_pass);
@@ -164,7 +181,7 @@ int main(){
             printf("\n\t== Login == ");
             printf("\n=========================== \n");
             printf("\nUsername\t: "); scanf("%s", input_user);
-            printf("\nPassword\t: "); scanf("%s", input_pass);
+            printf("\nPassword\t: "); scanf("%[^\n]", input_pass);
 
             system("cls");
             printf("Fetching data"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
@@ -182,7 +199,8 @@ int main(){
                 }
             if(pass_exist==true && user_exist==true){
                 if(i==j){
-                    printf("Welcome %s", username);
+                    logged=true;
+                    goto logged_in;
                 }
                 else if(i!=j){
                     printf("Sorry, wrong username or password!\n\n");
@@ -210,6 +228,22 @@ int main(){
             printf("\n=== Please Input a valid answer!!! ===\n");
             system("pause");
             goto home;
-
+    }
+    logged_in:
+    if(logged==true){
+        curr_car=j;
+            printf("Welcome %s!", username[curr_car]);
+            printf("\n\nWhat do you want to do?\n");
+            printf("1. Edit data\n2. Insert car");
+                switch(getch()){
+                    case '1':
+                        printf("insert password to change your data: ");
+                        scanf("%[^\n]s", input_pass);
+                    break;
+                }
+    }else if(logged==false){
+        printf("\nSorry there seems to be error ;(\n\n");
+        system("pause");
+        goto home;
     }
 }
