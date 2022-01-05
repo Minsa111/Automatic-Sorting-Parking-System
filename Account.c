@@ -9,10 +9,12 @@ int db_person=0;
 char pil;
 char acc[99];
 char username['0'][99], password['0'][99], plat['0'][99];
+char temp_username[99], temp_password[99], temp_plat[99];
 char input_plat[99], input_user[99], input_pass[99];
+char temp_input_plat[99], temp_input_user[99], temp_input_pass[99];
 int curr_car;
 char admin[99], admin_pass[99];
-
+bool correct=false;
 bool user_allow = false;
 bool user_exist = false;
 bool pass_exist = false;
@@ -23,7 +25,7 @@ bool logged=false;
 bool user_is_admin=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
-FILE*in_data, *rd_data, *admin_data;
+FILE*in_data, *read, *admin_data;
 
 
 void delay(int number_of_seconds)
@@ -40,7 +42,7 @@ void delay(int number_of_seconds)
 
 int main(){
     admin_data = fopen("admin.txt" , "r");
-        fscanf("%[^#]#%[^#]#",admin, admin_pass);
+        fscanf("%[^#]#%[^\n]\n",admin, admin_pass);
     fclose(admin_data);
     in_data = fopen("db_car.txt", "r");
         if (NULL != in_data){
@@ -69,7 +71,7 @@ int main(){
     system("cls");
     printf("===Welcome To car parking===");
     printf("\n\nCar slot available: %i\n\n", count);
-    printf("Press '1' to Register.\nPress '2' to Login.\n");
+    printf("Press '1' to Register.\nPress '2' to Login.\nPress '3' to Exit.");
     printf("\nInput : ");
     switch(getch()){
 
@@ -189,8 +191,6 @@ int main(){
             printf("\nUsername\t: "); scanf("%s", input_user);
             printf("\nPassword\t: "); scanf("%[^\n]", input_pass);
 
-            system("cls");
-            printf("Fetching data"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
                 for (i=1 ; i<=db_person ; i++){
                     if(strcmp(input_user,username[i])==0){
                         user_exist=true;
@@ -206,19 +206,21 @@ int main(){
                 if(strcmp(admin,input_user)==0 && strcmp(input_pass,admin_pass)==0){
                     user_is_admin=true;
                 }
+            system("cls");
+            printf("Fetching data"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
+
                     if (user_is_admin==false){
                         if(pass_exist==true && user_exist==true){
                             if(i==j){
                                 logged=true;
-                                logged_user();
+                                logged_user();goto home;
                             }
                             else if(i!=j){
                                 printf("Sorry, wrong username or password!\n\n");
                                 system("pause");
                                 goto home;
                             }
-                        }
-                        else if(pass_exist==false && user_exist==true){
+                        }else if(pass_exist==false && user_exist==true){
                             printf("Sorry %s, Wrong password\n\n", username[i]);
                             system("pause");
                             goto home;
@@ -230,11 +232,15 @@ int main(){
                             goto home;
                         }
                     }else if(user_is_admin==true){
-                        logged_admin();
+                        logged_admin();goto home;
+                    }else {
+                        printf("Something wenr wrong XP\n\n");
+                        system("pause");
+                        goto home;
                     }
             printf("\n========================== \n");
         break;
-        case'6':
+        case'3':
             return 0;
         break;
         default :
@@ -243,17 +249,70 @@ int main(){
             goto home;
     }
 }
+
+//FUCNTION-------------------------------------------------------------------------------------------------------------------------
+    //USER===============================================================================================================================
     void logged_user(){
     if(logged==true){
-        curr_car=j;
-            printf("Welcome %s!", username[curr_car]);
+        panel:
+        correct=false;
+        strcpy(temp_username,username[j]);
+        strcpy(temp_password,password[j]);
+        strcpy(temp_plat,plat[j]);
+            printf("Welcome %s!", temp_username);
             printf("\n\nWhat do you want to do?\n");
             printf("1. Edit data\n2. Insert car");
                 switch(getch()){
                     case '1':
+                    i=1;
+                    exist=false; correct=false;
                         printf("insert password to change your data: ");
-                        scanf("%[^\n]s", input_pass);
+                        scanf("%s", input_pass);
+                        read = fopen("db_car.txt", "r");
+                            while(fscanf(read,"%[^#]|%[^#]|%[^\n]\n", temp_input_user, temp_input_pass, temp_input_plat) != EOF){
+                                if(strcmp(temp_username, temp_input_user) == 0 && strcmp(temp_password, input_pass) == 0){
+                                    correct=true;
+                                    system("cls");
+                                    printf("Loading"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
+                                break;
+                                }
+                            i++;
+                            }
+                            if(correct==false){
+                                printf("Wrong password :(\n\n");
+                                system("pause");
+                                goto panel;
+                            }else if(correct==true){
+                                db_person=0;
+                                read = fopen("db_car.txt", "r");
+                                    for(i=1 ; !feof(in_data) ; i++){
+                                        db_person++;
+                                        fscanf(read,"%[^#]|%[^#]|%[^\n]\n", username[i], password[i], plat[i]);
+                                    }
+                                for(i=1 ; i<=db_person ; i++){
+                                    if(strcmp(username[i], temp_username)==0){
+                                        exist==true;
+                                    }
+                                }
+                                fclose(read);
+                                system("cls");
+                                printf("===Your current data===\n\n");
+                                printf("Username : %[^\n], ");
+                            }
+                        fclose(read);
                     break;
                 }
+    }else if (logged==false){
+        printf("err, error...\n\n");
+        system("pause");
+    }else{
+        printf("err, error...\n\n");
+        system("pause");
     }
 }
+//ADMIN LOGIN==========================================================================================================================
+    void logged_admin(){
+        printf("Welcome handsome :D\n\n");
+        printf("What do you want to do?\n");
+        printf("1. Edit data\n2. Check data");
+    }
