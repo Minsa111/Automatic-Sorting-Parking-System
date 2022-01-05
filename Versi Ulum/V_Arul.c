@@ -6,6 +6,7 @@
 
 FILE *add, *read, *admin;
 
+int i;
 int pil, pil2;
 char acc[99], logged_user[99], user[99], logged_plat[99];
 char input_user[99], input_pass[99], input_plat[99];
@@ -37,7 +38,7 @@ int main(){
             printf("Enter Pass\t\t: "); fflush(stdin); scanf("%[^\n]", input_pass);
             printf("Enter Car Plat Number\t: "); fflush(stdin); scanf("%[^\n]", input_plat); strupr(input_plat);
             printf("\n========================== \n");
-            for(int i = 0; i <= strlen(input_plat) ; i++){
+            for(i = 0; i <= strlen(input_plat) ; i++){
                 if( (input_plat[i] >= 33  && input_plat[i] <= 47)||  
                     (input_plat[i] >= 58 && input_plat[i] <= 64) ||  
                     (input_plat[i] >= 91 && input_plat[i] <= 96) ||  

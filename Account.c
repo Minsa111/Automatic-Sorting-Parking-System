@@ -11,6 +11,7 @@ char acc[99];
 char username['0'][99], password['0'][99], plat['0'][99];
 char input_plat[99], input_user[99], input_pass[99];
 int curr_car;
+char admin[99], admin_pass[99];
 
 bool user_allow = false;
 bool user_exist = false;
@@ -19,9 +20,10 @@ bool exist=false;
 bool inputted=true;
 bool input_space=false;
 bool logged=false;
+bool user_is_admin=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
-FILE*in_data;
+FILE*in_data, *rd_data, *admin_data;
 
 
 void delay(int number_of_seconds)
@@ -37,11 +39,14 @@ void delay(int number_of_seconds)
 }
 
 int main(){
-        in_data = fopen("db_car.txt", "r");
-    if (NULL != in_data){
-        fseek (in_data, 0, SEEK_END);
-        count = ftell(in_data);
-        exist = true;
+    admin_data = fopen("admin.txt" , "r");
+        fscanf("%[^#]#%[^#]#",admin, admin_pass);
+    fclose(admin_data);
+    in_data = fopen("db_car.txt", "r");
+        if (NULL != in_data){
+            fseek (in_data, 0, SEEK_END);
+            count = ftell(in_data);
+            exist = true;
         }fclose(in_data);
     if (exist == false){
         in_data = fopen("db_car.txt", "w");
@@ -171,6 +176,7 @@ int main(){
     //LOGIN----------------------------------------------------------------------------------------------------------------------------
         case'2':
             login:
+            
             user_exist = false;
             pass_exist=false;
             for(i=1; !feof(in_data) ; i++){
@@ -197,28 +203,35 @@ int main(){
                         break;
                     }
                 }
-            if(pass_exist==true && user_exist==true){
-                if(i==j){
-                    logged=true;
-                    goto logged_in;
+                if(strcmp(admin,input_user)==0 && strcmp(input_pass,admin_pass)==0){
+                    user_is_admin=true;
                 }
-                else if(i!=j){
-                    printf("Sorry, wrong username or password!\n\n");
-                    system("pause");
-                    goto home;
-                }
-            }
-            else if(pass_exist==false && user_exist==true){
-                printf("Sorry %s, Wrong password\n\n", username[i]);
-                system("pause");
-                goto home;
-            }
-            else{
-                printf("Sorry, wrong username or password!");
-                printf("\n\nPress any key to continue...");
-                getch();
-                goto home;
-            }
+                    if (user_is_admin==false){
+                        if(pass_exist==true && user_exist==true){
+                            if(i==j){
+                                logged=true;
+                                logged_user();
+                            }
+                            else if(i!=j){
+                                printf("Sorry, wrong username or password!\n\n");
+                                system("pause");
+                                goto home;
+                            }
+                        }
+                        else if(pass_exist==false && user_exist==true){
+                            printf("Sorry %s, Wrong password\n\n", username[i]);
+                            system("pause");
+                            goto home;
+                        }
+                        else{
+                            printf("Sorry, wrong username or password!");
+                            printf("\n\nPress any key to continue...");
+                            getch();
+                            goto home;
+                        }
+                    }else if(user_is_admin==true){
+                        logged_admin();
+                    }
             printf("\n========================== \n");
         break;
         case'6':
@@ -229,7 +242,8 @@ int main(){
             system("pause");
             goto home;
     }
-    logged_in:
+}
+    void logged_user(){
     if(logged==true){
         curr_car=j;
             printf("Welcome %s!", username[curr_car]);
@@ -241,9 +255,5 @@ int main(){
                         scanf("%[^\n]s", input_pass);
                     break;
                 }
-    }else if(logged==false){
-        printf("\nSorry there seems to be error ;(\n\n");
-        system("pause");
-        goto home;
     }
 }
