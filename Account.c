@@ -26,7 +26,8 @@ bool logged=false;
 bool user_is_admin=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
-FILE*in_data, *read, *admin_data;
+FILE *in_data, *read, *admin_data;
+void logged_user(); void logged_admin();
 
 
 void delay(int number_of_seconds)
@@ -43,7 +44,7 @@ void delay(int number_of_seconds)
 
 int main(){
     admin_data = fopen("admin.txt" , "r");
-        fscanf("%[^#]#%[^\n]\n",admin, admin_pass);
+        fscanf(admin_data, "%[^#]#%[^\n]\n", admin, admin_pass);
     fclose(admin_data);
     in_data = fopen("db_car.txt", "r");
         if (NULL != in_data){
@@ -162,7 +163,7 @@ int main(){
                         goto reg;
                     }}
             printf("\nEnter Pass\t\t\t: "); 
-            scanf("%[^\n]s", input_pass);
+            scanf(" %[^\n]s", input_pass);
                 strcpy (username[db_person],input_user);
                 strcpy (plat[db_person],input_plat);
                 strcpy (password[db_person],input_pass);
@@ -180,7 +181,7 @@ int main(){
     //LOGIN----------------------------------------------------------------------------------------------------------------------------
         case'2':
             login:
-            
+            user_is_admin=false;
             user_exist = false;
             pass_exist=false;
             in_data= fopen("db_car.txt", "r");
@@ -192,7 +193,7 @@ int main(){
             printf("\n\t== Login == ");
             printf("\n=========================== \n");
             printf("\nUsername\t: "); scanf("%s", input_user);
-            printf("\nPassword\t: "); scanf("%[^\n]", input_pass);
+            printf("\nPassword\t: "); scanf(" %[^\n]", input_pass);
 
                 for (i=1 ; i<=db_person ; i++){
                     if(strcmp(input_user,username[i])==0){
@@ -305,12 +306,12 @@ int main(){
                                     input_space=false;
                                     system("cls");
                                     printf("===Your current data===\n\n");
-                                    printf("Username\t: %[^\n]\n", username[count]);
-                                    printf("Password\t: %[^\n]\n", password[count]);
-                                    printf("Plat\t\t: %[^\n]\n",plat[count]);
+                                    printf("Username\t: %s\n", username[count]);
+                                    printf("Password\t: %s\n", password[count]);
+                                    printf("Plat\t\t: %s\n", plat[count]);
                             
                                     printf("\n\n===Your New Data===\n\n");
-                                    printf("Username\t: "); scanf("%[^\n]", input_user);
+                                    printf("Username\t: "); scanf(" %[^\n]", input_user);
                                     for(i=0 ; i<=count ; i++){
                                         if((input_plat[i]==32)){
                                             input_space=true;
@@ -344,8 +345,8 @@ int main(){
                                                 break;
                                             }
                                         }
-                                    printf("Password\t: ");scanf("%[^\n]", input_pass);
-                                    printf("Plat\t\t: ");scanf("%[^\n]", input_plat);
+                                    printf("Password\t: ");scanf(" %[^\n]", input_pass);
+                                    printf("Plat\t\t: ");scanf(" %[^\n]", input_plat);
                                         strupr(input_plat);
                                             count = strlen(input_plat);
                                                 for(i=0 ; i<=count ; i++){
@@ -391,7 +392,7 @@ int main(){
                                 }
                             }
                     break;
-//user case 1======================================================================================================================================
+//end of user case 1======================================================================================================================================
                 }
     }else if (logged==false){
         printf("err, error...\n\n");
@@ -404,6 +405,7 @@ int main(){
 //ADMIN LOGIN==========================================================================================================================
     void logged_admin(){
         panel:
+        system("cls");
         printf("Welcome handsome :D\n\n");
         printf("What do you want to do?\n");
         printf("1. Edit data\n2. Check data");
@@ -418,7 +420,7 @@ int main(){
                 fscanf(read, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
             }
             fclose(read);
-            printf("Insert username or plat number: "); scanf("%[^\n]", input);
+            printf("Insert username or plat number: "); scanf(" %[^\n]", input);
                 for(i=1; i<=db_person ; i++){
                     if(strcmp(input,username[i])==0 || strcmp(input,plat[i])==0){
                         exist=true;
@@ -429,12 +431,12 @@ int main(){
                     edit_data:
                     system("cls");
                         printf("===Data found===\n\n");
-                        printf("Username\t: %[^\n]\n", username[count]);
-                        printf("Password\t: %[^\n]\n", password[count]);
-                        printf("Plat\t\t: %[^\n]\n", plat[count]);
+                        printf("Username\t: %s\n", username[count]);
+                        printf("Password\t: %s\n", password[count]);
+                        printf("Plat\t\t: %s\n", plat[count]);
                         
                         printf("\n\n===Edit Data===\n\n");
-                            printf("Username\t: "); scanf("%[^\n]", input_user);
+                            printf("Username\t: "); scanf(" %[^\n]", input_user);
                             for(i=0 ; i<=count ; i++){
                                 if((input_plat[i]==32)){
                                     input_space=true;
@@ -468,8 +470,8 @@ int main(){
                                         break;
                                     }
                                 }
-                            printf("Password\t: ");scanf("%[^\n]", input_pass);
-                            printf("Plat\t\t: ");scanf("%[^\n]", input_plat);
+                            printf("Password\t: ");scanf(" %[^\n]", input_pass);
+                            printf("Plat\t\t: ");scanf(" %[^\n]", input_plat);
                                 strupr(input_plat);
                                     count = strlen(input_plat);
                                         for(i=0 ; i<=count ; i++){
