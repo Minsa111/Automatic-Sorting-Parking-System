@@ -6,6 +6,7 @@
 #include <time.h>
 
 int db_person=0;
+char input[99];
 char pil;
 char acc[99];
 char username['0'][99], password['0'][99], plat['0'][99];
@@ -64,7 +65,7 @@ int main(){
                 db_person++;
                 fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
             }
-        }
+        }fclose(in_data);
     home :
     exist=false;
     count = 20-db_person;
@@ -94,7 +95,7 @@ int main(){
                 printf("\nEnter Username\t\t\t: "); scanf("%s", input_user);
 
             for(i=0 ; i<=count ; i++){
-                if((input_plat[i]==32)){
+                if((input_user[i]==32)){
                     input_space=true;
                     break;
                 }
@@ -160,7 +161,8 @@ int main(){
                             system("pause");
                         goto reg;
                     }}
-            printf("\nEnter Pass\t\t\t: "); scanf("%[^\n]s", input_pass);
+            printf("\nEnter Pass\t\t\t: "); 
+            scanf("%[^\n]s", input_pass);
                 strcpy (username[db_person],input_user);
                 strcpy (plat[db_person],input_plat);
                 strcpy (password[db_person],input_pass);
@@ -181,9 +183,10 @@ int main(){
             
             user_exist = false;
             pass_exist=false;
+            in_data= fopen("db_car.txt", "r");
             for(i=1; !feof(in_data) ; i++){
                 fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
-            }
+            }fclose(in_data);
             system("cls");
             printf("=========================== ");
             printf("\n\t== Login == ");
@@ -263,6 +266,7 @@ int main(){
             printf("\n\nWhat do you want to do?\n");
             printf("1. Edit data\n2. Insert car");
                 switch(getch()){
+//user case 1=======================================================================================================================
                     case '1':
                     i=1;
                     exist=false; correct=false;
@@ -277,7 +281,7 @@ int main(){
                                 break;
                                 }
                             i++;
-                            }
+                            }fclose(read);
                             if(correct==false){
                                 printf("Wrong password :(\n\n");
                                 system("pause");
@@ -285,22 +289,109 @@ int main(){
                             }else if(correct==true){
                                 db_person=0;
                                 read = fopen("db_car.txt", "r");
-                                    for(i=1 ; !feof(in_data) ; i++){
+                                    for(i=1 ; !feof(read) ; i++){
                                         db_person++;
                                         fscanf(read,"%[^#]|%[^#]|%[^\n]\n", username[i], password[i], plat[i]);
                                     }
+                                fclose(read);
                                 for(i=1 ; i<=db_person ; i++){
                                     if(strcmp(username[i], temp_username)==0){
-                                        exist==true;
+                                        exist=true;
+                                        break;
                                     }
+                                }if (exist==true){
+                                    edit_data:
+                                    count=i;
+                                    input_space=false;
+                                    system("cls");
+                                    printf("===Your current data===\n\n");
+                                    printf("Username\t: %[^\n]\n", username[count]);
+                                    printf("Password\t: %[^\n]\n", password[count]);
+                                    printf("Plat\t\t: %[^\n]\n",plat[count]);
+                            
+                                    printf("\n\n===Your New Data===\n\n");
+                                    printf("Username\t: "); scanf("%[^\n]", input_user);
+                                    for(i=0 ; i<=count ; i++){
+                                        if((input_plat[i]==32)){
+                                            input_space=true;
+                                            break;
+                                        }
+                                    }
+                                    if (input_space==true){
+                                        printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
+                                        system ("pause");
+                                        goto edit_data;
+                                    }
+                                    exist=false;
+                                    // nyari kalo username udah ada apa belum.
+                                        for(i=1; i<=db_person ; i++){
+                                            if(strcmp(input_user, username[i])==0){
+                                                exist=true;
+                                                break;
+                                            }
+                                        }
+                                        if(exist==true){
+                                            printf("=== Sorry, username is not available ===");
+                                            printf("\n\nDo you wish to try again?(y/n)");
+                                            switch(getch()){
+                                                case'y':
+                                                case'Y':
+                                                    goto edit_data;
+                                                break;
+                                                case'n':
+                                                case'N':
+                                                    goto panel;
+                                                break;
+                                            }
+                                        }
+                                    printf("Password\t: ");scanf("%[^\n]", input_pass);
+                                    printf("Plat\t\t: ");scanf("%[^\n]", input_plat);
+                                        strupr(input_plat);
+                                            count = strlen(input_plat);
+                                                for(i=0 ; i<=count ; i++){
+                                                    if( !(input_plat[i]>='A' && input_plat[i]<='Z') && !(input_plat[i]>='0' && input_plat[i]<='9') && !(input_plat[i]=='\0') && !(input_plat[i]==32)){
+                                                            j++;
+                                                            break;
+                                                    }
+                                                }
+                                            if(j==1){
+                                                printf("===The plat should not contain any special characters!===");
+                                                printf("Do you wish to try again?(y/n)");
+                                                    switch(getch()){
+                                                        case 'Y':
+                                                        case 'y':
+                                                        system("cls");
+                                                            goto edit_data;
+                                                        break;
+                                                        case 'N':
+                                                        case 'n':
+                                                            goto panel;
+                                                        break;
+                                                        default:
+                                                    printf("\n\nPlease enter a valid answer!");
+                                                    system("pause");
+                                                goto edit_data;
+                                                }
+                                            }
+                                strcpy(username[count], input_user);
+                                strcpy(password[count], input_pass);
+                                strcpy(plat[count], input_plat);
+                                    if(strcmp(username[count], input_user)==0 && strcmp(password[count], input_pass)==0 && strcmp(plat[count], input_plat)==0){
+                                        for(i=1 ; i<=db_person ; i++){
+                                            in_data = fopen("db_car.txt", "w");
+                                                fprintf(in_data, "%s#%s#%s\n", username[i],password[i], plat[i]);
+                                            fclose(in_data);
+                                            printf("Data succesfully edited");
+                                        }
+                                    }   
+                                }else if(exist==false){
+                                    printf("Data is not found:(\n\n");
+                                    system("pause");
+                                    goto panel;
                                 }
-                                fclose(read);
-                                system("cls");
-                                printf("===Your current data===\n\n");
-                                printf("Username : %[^\n], ");
                             }
-                        fclose(read);
                     break;
+//user case 1======================================================================================================================================
                 }
     }else if (logged==false){
         printf("err, error...\n\n");
@@ -312,7 +403,100 @@ int main(){
 }
 //ADMIN LOGIN==========================================================================================================================
     void logged_admin(){
+        panel:
         printf("Welcome handsome :D\n\n");
         printf("What do you want to do?\n");
         printf("1. Edit data\n2. Check data");
+        switch(getch()){
+            case '1':
+            exist=false;
+                db_person==0;
+                system("cls");
+            read = fopen("db_car.txt", "r");
+            for(i=1; !feof(read) ; i++){
+                db_person++;
+                fscanf(read, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
+            }
+            fclose(read);
+            printf("Insert username or plat number: "); scanf("%[^\n]", input);
+                for(i=1; i<=db_person ; i++){
+                    if(strcmp(input,username[i])==0 || strcmp(input,plat[i])==0){
+                        exist=true;
+                        break;
+                    }
+                }if(exist==true)
+                    count=i;
+                    edit_data:
+                    system("cls");
+                        printf("===Data found===\n\n");
+                        printf("Username\t: %[^\n]\n", username[count]);
+                        printf("Password\t: %[^\n]\n", password[count]);
+                        printf("Plat\t\t: %[^\n]\n", plat[count]);
+                        
+                        printf("\n\n===Edit Data===\n\n");
+                            printf("Username\t: "); scanf("%[^\n]", input_user);
+                            for(i=0 ; i<=count ; i++){
+                                if((input_plat[i]==32)){
+                                    input_space=true;
+                                    break;
+                                }
+                            }
+                            if (input_space==true){
+                                printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
+                                system ("pause");
+                                goto edit_data;
+                            }
+                            exist=false;
+                            // nyari kalo username udah ada apa belum.
+                                for(i=1; i<=db_person ; i++){
+                                    if(strcmp(input_user, username[i])==0){
+                                        exist=true;
+                                        break;
+                                    }
+                                }
+                                if(exist==true){
+                                    printf("=== Sorry, username is not available ===");
+                                    printf("\n\nDo you wish to try again?(y/n)");
+                                    switch(getch()){
+                                        case'y':
+                                        case'Y':
+                                            goto edit_data;
+                                        break;
+                                        case'n':
+                                        case'N':
+                                            goto panel;
+                                        break;
+                                    }
+                                }
+                            printf("Password\t: ");scanf("%[^\n]", input_pass);
+                            printf("Plat\t\t: ");scanf("%[^\n]", input_plat);
+                                strupr(input_plat);
+                                    count = strlen(input_plat);
+                                        for(i=0 ; i<=count ; i++){
+                                            if( !(input_plat[i]>='A' && input_plat[i]<='Z') && !(input_plat[i]>='0' && input_plat[i]<='9') && !(input_plat[i]=='\0') && !(input_plat[i]==32)){
+                                                    j++;
+                                                    break;
+                                            }
+                                        }
+                                    if(j==1){
+                                        printf("===The plat should not contain any special characters!===");
+                                        printf("Do you wish to try again?(y/n)");
+                                            switch(getch()){
+                                                case 'Y':
+                                                case 'y':
+                                                system("cls");
+                                                    goto edit_data;
+                                                break;
+                                                case 'N':
+                                                case 'n':
+                                                    goto panel;
+                                                break;
+                                                default:
+                                            printf("\n\nPlease enter a valid answer!");
+                                            system("pause");
+                                        goto edit_data;
+                                        }
+                                    }
+            break;
+        }
     }
