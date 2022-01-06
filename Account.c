@@ -29,7 +29,7 @@ bool user_is_admin=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
 FILE *in_data, *read, *admin_data;
-void logged_user(); void logged_admin();
+void logged_user(); void logged_admin(); void delay();
 
 
 void delay(int number_of_seconds)
@@ -66,13 +66,14 @@ int main(){
         }else if(count > 0){
             for(i=1; !feof(in_data) ; i++){
                 db_person++;
-                fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
+                fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }
         }fclose(in_data);
     home :
+    system("cls");
     exist=false;
     count = 20-db_person;
-    system("cls");
+
     printf("===Welcome To car parking===");
     printf("\n\nCar slot available: %i\n\n", count);
     printf("Press '1' to Register.\nPress '2' to Login.\nPress '3' to Exit.");
@@ -95,7 +96,7 @@ int main(){
                 printf("============================ ");
                 printf("\n\t== Register == ");
                 printf("\n============================ \n");
-                printf("\nEnter Username\t\t\t: "); scanf("%s", input_user);
+                printf("\nEnter Username\t\t\t: "); scanf("%s", &input_user);
 
             for(i=0 ; i<=count ; i++){
                 if((input_user[i]==32)){
@@ -188,13 +189,13 @@ int main(){
             pass_exist=false;
             in_data= fopen("db_acc.txt", "r");
             for(i=1; !feof(in_data) ; i++){
-                fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
+                fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }fclose(in_data);
             system("cls");
             printf("=========================== ");
             printf("\n\t== Login == ");
             printf("\n=========================== \n");
-            printf("\nUsername\t: "); scanf("%s", input_user);
+            printf("\nUsername\t: "); scanf("%s", &input_user);
             printf("\nPassword\t: "); scanf(" %[^\n]", input_pass);
 
                 for (i=1 ; i<=db_person ; i++){
@@ -204,7 +205,7 @@ int main(){
                     }
                 }
                 for (j=1 ; j<=db_person ; j++){
-                    if(strcmp(input_user,password[j])==0){
+                    if(strcmp(input_pass,password[j])==0){
                         pass_exist=true;
                         break;
                     }
@@ -267,14 +268,14 @@ int main(){
         strcpy(temp_plat,plat[j]);
             printf("Welcome %s!", temp_username);
             printf("\n\nWhat do you want to do?\n");
-            printf("1. Edit data\n2. Insert car\n3. Check car\n4. Log out\n");
+            printf("1. Edit data\n2. Insert car\n3. Take car\n4. Check car\n5. Log out\n");
                 switch(getch()){
 //user case 1=======================================================================================================================
                     case '1':
                     i=1;
                     exist=false; correct=false;
                         printf("insert password to change your data: ");
-                        scanf("%s", input_pass);
+                        scanf("%s", &input_pass);
                         read = fopen("db_acc.txt", "r");
                             while(fscanf(read,"%[^#]|%[^#]|%[^\n]\n", temp_input_user, temp_input_pass, temp_input_plat) != EOF){
                                 if(strcmp(temp_username, temp_input_user) == 0 && strcmp(temp_password, input_pass) == 0){
@@ -395,8 +396,16 @@ int main(){
                             }
                     break;
 //end of user case 1======================================================================================================================================
-// case 2======================================================================================================================================
+// case 2=================================================================================================================================================
                     case '2':
+                    read = fopen("db_car.txt", "r");
+                    if (fseek (in_data, 0, SEEK_END)!=0){
+                        for(i=1 ; !feof(read) ; i++){
+                            fscanf(read, "%[^\n]\n", slot[i]);
+                            slot_count++;
+                        }
+                    }
+                    fclose(read);
                     slot_empty=true;
                     slot_count++;
                     if(slot_count<=20 && slot_count > 0){
@@ -413,14 +422,28 @@ int main(){
                         goto panel;
                     }
                     system("cls");
-                    printf("Inserting car . ");delay(1);printf('. ');delay(1);printf('. ');delay(1);printf('. ');
+                    printf("Inserting car . "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
                     if(slot_empty==false){
-                        printf("You already inputted your car at slot '%i'!", i-1);
+                        slot_count--;
+                        printf("You already inputted your car at slot '%i'!", i);
                         system ("pause");
                         goto panel;
                     }else if(slot_empty==true){
-                        strcpy(slot[i-1], temp_username);
-                        printf("");
+                        system("cls");
+                        strcpy(slot[slot_count], temp_username);
+                        in_data = fopen("db_car.txt", "w");
+                            for(i=1; i<=slot_count ; i++){
+                                fprintf(in_data, "%s \n", slot[i]);
+                            }
+                        printf("car inputted at slot %i", slot_count);
+                        fclose(in_data);
+                        system("pause");
+                        goto panel;
+                    }else{
+                        printf("\nSomething went wrong :(\n\n");
+                        slot_count--;
+                        system("pause");
+                        goto panel;
                     }
                     break;
                 }
@@ -447,7 +470,7 @@ int main(){
             read = fopen("db_acc.txt", "r");
             for(i=1; !feof(read) ; i++){
                 db_person++;
-                fscanf(read, "%[^#]#%[^#]#%[^\n]\n", &username[i], &password[i], &plat[i]);
+                fscanf(read, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }
             fclose(read);
             printf("Insert username or plat number: "); scanf(" %[^\n]", input);
@@ -534,7 +557,7 @@ int main(){
                         strcpy(plat[count], input_plat);
                     in_data = fopen("db_acc.txt", "w");
                         for(i=1; !feof(in_data) ; i++){
-                            fprintf(read, "%s#%s#%s\n", &username[i], &password[i], &plat[i]);
+                            fprintf(in_data, "%s#%s#%s\n", username[i], &password[i], &plat[i]);
                         }
                     fclose(in_data);
             break;
