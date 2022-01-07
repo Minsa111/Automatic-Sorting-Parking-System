@@ -8,7 +8,6 @@ int slot_count=0;
 int db_person=0;
 char input[99];
 char slot['0'][99];
-char pil;
 char acc[99];
 char username['0'][99], password['0'][99], plat['0'][99];
 char temp_username[99], temp_password[99], temp_plat[99];
@@ -16,6 +15,7 @@ char input_plat[99], input_user[99], input_pass[99];
 char temp_input_plat[99], temp_input_user[99], temp_input_pass[99];
 int curr_car;
 char admin[99], admin_pass[99];
+bool logged=false;
 bool slot_empty = true;
 bool correct=false;
 bool user_allow = false;
@@ -24,7 +24,7 @@ bool pass_exist = false;
 bool exist=false;
 bool inputted=true;
 bool input_space=false;
-bool logged=false;
+bool logging=false;
 bool user_is_admin=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
@@ -77,7 +77,7 @@ int main(){
             slot_count++;
             fscanf(read, "%[^\n]\n", slot[i]);
         }
-    logged=false;
+    logging=false;
     system("cls");
     exist=false;
     printf("===Welcome To car parking===");
@@ -230,7 +230,7 @@ int main(){
                     if (user_is_admin==false){
                         if(pass_exist==true && user_exist==true){
                             if(i==j){
-                                logged=true;
+                                logging=true;
                                 logged_user();goto home;
                             }
                             else if(i!=j){
@@ -271,7 +271,7 @@ int main(){
 //FUCNTION-------------------------------------------------------------------------------------------------------------------------
     //USER===============================================================================================================================
     void logged_user(){
-    if(logged==true){
+    if(logging==true){
         strcpy(temp_username,username[j]);
         strcpy(temp_password,password[j]);
         strcpy(temp_plat,plat[j]);
@@ -498,8 +498,60 @@ int main(){
                         goto panel;
                     }
                     break;
+//CASE 4 CHECK CAR================================================================================================================================================================================================
+                    case '4':
+                slot_empty=true;
+                slot_count=0;
+            read = fopen("db_acc.txt", "r");
+                for(i=1; !feof(read) ; i++){
+                    db_person++;
+                fscanf(read, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
+            }fclose(read);
+                    read = fopen("db_car.txt", "r");
+                        for(i=1 ; !feof(read) ; i++){
+                            slot_count++;
+                            fscanf(read, "%[^\n]\n", slot[i]);
+                        }
+                    fclose(read);
+                    for(i=1 ; i<=slot_count ; i++){
+                        if(strcmp(temp_username, slot[i])==0){
+                            slot_empty=false;
+                            break;
+                        }
+                    }
+                    for(i=1 ; i<=db_person ; i++){
+                        if(strcmp(temp_username, username[i])==0){
+                            break;
+                        }
+                    }
+                        printf("\t===Your data===\n\n");
+                        printf("Username\t: %s\n", username[i]);
+                        printf("Plat\t\t: %s\n", plat[i]);
+                        if(slot_empty==true){
+                            printf("Car status\t: Not inserted\n\n");
+                            system("pause");
+                            goto panel;
+                        }else if(slot_empty==false){
+                            printf("Car status\t: Inserted\n\n");
+                            system("pause");
+                            goto panel;
+                        }else{
+                            printf("err,  something went wrong\n");
+                            system("pause");
+                            goto panel;
+                        }
+                    break;
+//case 5 LOG OUT==========================================================================================================================================================
+                    case '5':
+                        printf("Logging out"); delay(1); printf(" ."); delay(1); printf(" ."); delay(1); printf(" .");
+                    break;
+                    default:
+                        printf("Please put a valid answer!!!\n\n");
+                        system("pause");
+                        goto panel;
+                    break;
                 }
-    }else if (logged==false){
+    }else if (logging==false){
         printf("err, error...\n\n");
         system("pause");
     }else{
