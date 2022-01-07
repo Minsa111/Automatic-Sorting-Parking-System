@@ -45,6 +45,9 @@ void delay(int number_of_seconds)
 }
 
 int main(){
+    fclose(read);
+    home :
+    slot_count=0;
     admin_data = fopen("admin.txt" , "r");
         fscanf(admin_data, "%[^#]#%[^\n]\n", admin, admin_pass);
     fclose(admin_data);
@@ -69,13 +72,21 @@ int main(){
                 fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }
         }fclose(in_data);
-    home :
+    read = fopen("db_car.txt", "r");
+        for(i=1 ; !feof(read) ; i++){
+            slot_count++;
+            fscanf(read, "%[^\n]\n", slot[i]);
+        }
+    logged=false;
     system("cls");
     exist=false;
-    count = 20-db_person;
-
     printf("===Welcome To car parking===");
-    printf("\n\nCar slot available: %i\n\n", count);
+    count = 20-slot_count;
+    if(count<1){
+        printf("\n\nNo parking slot available\n\n");
+    }else{
+        printf("\n\nCar slot available: %i\n\n", count);
+    }
     printf("Press '1' to Register.\nPress '2' to Login.\nPress '3' to Exit.");
     printf("\nInput : ");
     switch(getch()){
@@ -241,7 +252,7 @@ int main(){
                     }else if(user_is_admin==true){
                         logged_admin();goto home;
                     }else {
-                        printf("Something wenr wrong XP\n\n");
+                        printf("Something went wrong XP\n\n");
                         system("pause");
                         goto home;
                     }
@@ -261,11 +272,12 @@ int main(){
     //USER===============================================================================================================================
     void logged_user(){
     if(logged==true){
-        panel:
-        correct=false;
         strcpy(temp_username,username[j]);
         strcpy(temp_password,password[j]);
         strcpy(temp_plat,plat[j]);
+        panel:
+        system("cls");
+        correct=false;
             printf("Welcome %s!", temp_username);
             printf("\n\nWhat do you want to do?\n");
             printf("1. Edit data\n2. Insert car\n3. Take car\n4. Check car\n5. Log out\n");
@@ -377,9 +389,9 @@ int main(){
                                                 goto edit_data;
                                                 }
                                             }
-                                strcpy(username[count], input_user);
-                                strcpy(password[count], input_pass);
-                                strcpy(plat[count], input_plat);
+                                    strcpy(username[count], input_user);
+                                    strcpy(password[count], input_pass);
+                                    strcpy(plat[count], input_plat);
                                     if(strcmp(username[count], input_user)==0 && strcmp(password[count], input_pass)==0 && strcmp(plat[count], input_plat)==0){
                                         for(i=1 ; i<=db_person ; i++){
                                             in_data = fopen("db_acc.txt", "w");
@@ -389,7 +401,7 @@ int main(){
                                         }
                                     }   
                                 }else if(exist==false){
-                                    printf("Data is not found:(\n\n");
+                                    printf("Data is not found :(\n\n");
                                     system("pause");
                                     goto panel;
                                 }
@@ -398,13 +410,12 @@ int main(){
 //end of user case 1======================================================================================================================================
 // case 2=================================================================================================================================================
                     case '2':
+                    slot_count=0;
                     read = fopen("db_car.txt", "r");
-                    if (fseek (in_data, 0, SEEK_END)!=0){
                         for(i=1 ; !feof(read) ; i++){
-                            fscanf(read, "%[^\n]\n", slot[i]);
                             slot_count++;
+                            fscanf(read, "%[^\n]\n", slot[i]);
                         }
-                    }
                     fclose(read);
                     slot_empty=true;
                     slot_count++;
@@ -422,10 +433,10 @@ int main(){
                         goto panel;
                     }
                     system("cls");
-                    printf("Inserting car . "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
+                    printf("Inserting car "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
                     if(slot_empty==false){
                         slot_count--;
-                        printf("You already inputted your car at slot '%i'!", i);
+                        printf("You already inputted your car at slot '%i'!\n", i);
                         system ("pause");
                         goto panel;
                     }else if(slot_empty==true){
@@ -433,9 +444,9 @@ int main(){
                         strcpy(slot[slot_count], temp_username);
                         in_data = fopen("db_car.txt", "w");
                             for(i=1; i<=slot_count ; i++){
-                                fprintf(in_data, "%s \n", slot[i]);
+                                fprintf(in_data, "%s\n", slot[i]);
                             }
-                        printf("car inputted at slot %i", slot_count);
+                        printf("car inputted at slot '%i'.", slot_count);
                         fclose(in_data);
                         system("pause");
                         goto panel;
@@ -443,6 +454,47 @@ int main(){
                         printf("\nSomething went wrong :(\n\n");
                         slot_count--;
                         system("pause");
+                        goto panel;
+                    }
+                    slot_empty=true;
+                    break;
+//case 3|| TAKE CAR ============================================================================================================================================================
+                    case '3':
+                    slot_empty=true;
+                    slot_count=0;
+                        read = fopen("db_car.txt", "r");
+                            for(i=1 ; !feof(read) ; i++){
+                                slot_count++;
+                                fscanf(read, "%[^\n]\n", slot[i]);
+                            }
+                        fclose(read);
+                    for(i=1 ; i<=slot_count ; i++){
+                        if(strcmp(temp_username, slot[i])==0){
+                            slot_empty=false;
+                            break;
+                        }
+                    }
+                    printf("Taking car out "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
+                    system("cls");
+                    if(slot_empty==false){
+                            for(j=i ; j<=slot_count; j++){
+                                strcpy(slot[j],slot[j+1]);
+                            }
+                            slot_count--;
+                            in_data = fopen("db_car.txt", "w");
+                                for(i=1; i<=slot_count ; i++){
+                                    fprintf(in_data, "%s\n", slot[i]);
+                                }
+                            fclose(in_data);
+                                printf("\n\nTake car success!\n\n");
+                                system("pause");
+                                goto panel;
+                    }else if(slot_empty==true){
+                        printf("You haven't inserted a car yet\n\n");
+                        system("pause");
+                        goto panel;
+                    }else{
+                        printf("Something went wrong");
                         goto panel;
                     }
                     break;
