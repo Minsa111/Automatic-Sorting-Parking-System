@@ -62,7 +62,7 @@ int main(){
             fseek (in_data, 0, SEEK_END);
             count = ftell(in_data);
         fclose (in_data);
-    }
+        }
     in_data = fopen("db_acc.txt", "r");
         if (count == 0) {
             inputted = false;
@@ -76,9 +76,8 @@ int main(){
         for(i=1 ; !feof(read) ; i++){
             slot_count++;
             fscanf(read, "%[^\n]\n", slot[i]);
-        }
+        }fclose(read);
     logging=false;
-    system("cls");
     exist=false;
     printf("===Welcome To car parking===");
     count = 20-slot_count;
@@ -289,8 +288,8 @@ int main(){
                         printf("insert password to change your data: ");
                         scanf("%s", &input_pass);
                         read = fopen("db_acc.txt", "r");
-                            while(fscanf(read,"%[^#]|%[^#]|%[^\n]\n", temp_input_user, temp_input_pass, temp_input_plat) != EOF){
-                                if(strcmp(temp_username, temp_input_user) == 0 && strcmp(temp_password, input_pass) == 0){
+                            while(fscanf(read,"%[^#]#%[^#]#%[^\n]\n", temp_input_user, temp_input_pass, temp_input_plat) != EOF){
+                                if(strcmp(temp_username, temp_input_user) == 0 && strcmp(temp_password, temp_input_pass) == 0){
                                     correct=true;
                                     system("cls");
                                     printf("Loading"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
@@ -307,7 +306,7 @@ int main(){
                                 read = fopen("db_acc.txt", "r");
                                     for(i=1 ; !feof(read) ; i++){
                                         db_person++;
-                                        fscanf(read,"%[^#]|%[^#]|%[^\n]\n", username[i], password[i], plat[i]);
+                                        fscanf(read,"%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
                                     }
                                 fclose(read);
                                 for(i=1 ; i<=db_person ; i++){
