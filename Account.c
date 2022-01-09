@@ -4,7 +4,9 @@
 #include <string.h>
 #include <conio.h>
 #include <time.h>
+
 int slot_count=0;
+int word_count=0;
 int db_person=0;
 char input[99];
 char slot['0'][99];
@@ -16,6 +18,7 @@ char temp_input_plat[99], temp_input_user[99], temp_input_pass[99];
 int curr_car;
 char admin[99], admin_pass[99];
 bool logged=false;
+bool char_only=false;
 bool slot_empty = true;
 bool correct=false;
 bool user_allow = false;
@@ -26,6 +29,7 @@ bool inputted=true;
 bool input_space=false;
 bool logging=false;
 bool user_is_admin=false;
+bool car_exist=false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
 FILE *in_data, *read, *admin_data;
@@ -47,22 +51,27 @@ void delay(int number_of_seconds)
 int main(){
     fclose(read);
     home :
+    system("cls");
     slot_count=0;
+
     admin_data = fopen("admin.txt" , "r");
         fscanf(admin_data, "%[^#]#%[^\n]\n", admin, admin_pass);
     fclose(admin_data);
+
     in_data = fopen("db_acc.txt", "r");
         if (NULL != in_data){
             fseek (in_data, 0, SEEK_END);
             count = ftell(in_data);
             exist = true;
         }fclose(in_data);
+
     if (exist == false){
         in_data = fopen("db_acc.txt", "w");
             fseek (in_data, 0, SEEK_END);
             count = ftell(in_data);
         fclose (in_data);
         }
+
     in_data = fopen("db_acc.txt", "r");
         if (count == 0) {
             inputted = false;
@@ -72,6 +81,8 @@ int main(){
                 fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }
         }fclose(in_data);
+
+
     read = fopen("db_car.txt", "r");
         for(i=1 ; !feof(read) ; i++){
             slot_count++;
@@ -211,14 +222,12 @@ int main(){
                 for (i=1 ; i<=db_person ; i++){
                     if(strcmp(input_user,username[i])==0){
                         user_exist=true;
-                        break;
+                        if(strcmp(input_pass, password[i])==0){
+                            pass_exist=true;
+                            break;
+                        }
                     }
-                }
-                for (j=1 ; j<=db_person ; j++){
-                    if(strcmp(input_pass,password[j])==0){
-                        pass_exist=true;
-                        break;
-                    }
+
                 }
                 if(strcmp(admin,input_user)==0 && strcmp(input_pass,admin_pass)==0){
                     user_is_admin=true;
@@ -228,15 +237,8 @@ int main(){
 
                     if (user_is_admin==false){
                         if(pass_exist==true && user_exist==true){
-                            if(i==j){
-                                logging=true;
-                                logged_user();goto home;
-                            }
-                            else if(i!=j){
-                                printf("Sorry, wrong username or password!\n\n");
-                                system("pause");
-                                goto home;
-                            }
+                            logging=true;
+                            logged_user();goto home;
                         }else if(pass_exist==false && user_exist==true){
                             printf("Sorry %s, Wrong password\n\n", username[i]);
                             system("pause");
@@ -271,9 +273,9 @@ int main(){
     //USER===============================================================================================================================
     void logged_user(){
     if(logging==true){
-        strcpy(temp_username,username[j]);
-        strcpy(temp_password,password[j]);
-        strcpy(temp_plat,plat[j]);
+        strcpy(temp_username,username[i]);
+        strcpy(temp_password,password[i]);
+        strcpy(temp_plat,plat[i]);
         panel:
         system("cls");
         correct=false;
@@ -284,7 +286,9 @@ int main(){
 //user case 1=======================================================================================================================
                     case '1':
                     i=1;
-                    exist=false; correct=false;
+                    slot_count=0;
+                    exist=false; correct=false; car_exist=false;
+
                         printf("insert password to change your data: ");
                         scanf("%s", &input_pass);
                         read = fopen("db_acc.txt", "r");
@@ -295,14 +299,33 @@ int main(){
                                     printf("Loading"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
                                 break;
                                 }
-                            i++;
                             }fclose(read);
                             if(correct==false){
                                 printf("Wrong password :(\n\n");
                                 system("pause");
                                 goto panel;
                             }else if(correct==true){
+                            edit_data:
+                                i=1;
+                                slot_count=0;
+                                exist=false; 
+                                correct=false;
+                                car_exist=false;  
+                                char_only=false;
                                 db_person=0;
+
+                                read = fopen ("db_car.txt", "r");
+                                for(i=1 ; !feof(read) ; i++){
+                                    slot_count++;
+                                    fscanf(read, "%[^\n]\n", slot[i]);
+                                }
+                                for(i=k ; k<=slot_count ; k++){
+                                    if(strcmp(temp_username,slot[k])==0){
+                                    car_exist=true;
+                                        break;
+                                    }
+                                }
+                                fclose(read);
                                 read = fopen("db_acc.txt", "r");
                                     for(i=1 ; !feof(read) ; i++){
                                         db_person++;
@@ -315,9 +338,8 @@ int main(){
                                         break;
                                     }
                                 }if (exist==true){
-                                    edit_data:
+                                    word_count=0;
                                     count=i;
-                                    input_space=false;
                                     system("cls");
                                     printf("===Your current data===\n\n");
                                     printf("Username\t: %s\n", username[count]);
@@ -326,8 +348,9 @@ int main(){
                             
                                     printf("\n\n===Your New Data===\n\n");
                                     printf("Username\t: "); scanf(" %[^\n]", input_user);
-                                    for(i=0 ; i<=count ; i++){
-                                        if((input_plat[i]==32)){
+                                    word_count = strlen(input_user);
+                                    for(i=0 ; i<=word_count ; i++){
+                                        if(input_plat[i]==' '){
                                             input_space=true;
                                             break;
                                         }
@@ -335,6 +358,7 @@ int main(){
                                     if (input_space==true){
                                         printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
                                         system ("pause");
+                                        input_space=false;
                                         goto edit_data;
                                     }
                                     exist=false;
@@ -359,17 +383,17 @@ int main(){
                                                 break;
                                             }
                                         }
-                                    printf("Password\t: ");scanf(" %[^\n]", input_pass);
-                                    printf("Plat\t\t: ");scanf(" %[^\n]", input_plat);
+                                    printf("Password\t: ");  scanf(" %[^\n]", input_pass);
+                                    printf("Plat\t\t: "); scanf(" %[^\n]", input_plat);
                                         strupr(input_plat);
-                                            count = strlen(input_plat);
-                                                for(i=0 ; i<=count ; i++){
-                                                    if( !(input_plat[i]>='A' && input_plat[i]<='Z') && !(input_plat[i]>='0' && input_plat[i]<='9') && !(input_plat[i]=='\0') && !(input_plat[i]==32)){
-                                                            j++;
+                                            word_count = strlen(input_plat);
+                                                for(i=0 ; i<=word_count ; i++){
+                                                    if( !(input_plat[i]>='A' && input_plat[i]<='Z') && !(input_plat[i]>='a' && input_plat[i]<='z') && !(input_plat[i]>='0' && input_plat[i]<='9') && !(input_plat[i]=='\0') && !(input_plat[i]==' ')){
+                                                            char_only=true;
                                                             break;
                                                     }
                                                 }
-                                            if(j==1){
+                                            if(char_only==true){
                                                 printf("===The plat should not contain any special characters!===");
                                                 printf("Do you wish to try again?(y/n)");
                                                     switch(getch()){
@@ -391,14 +415,29 @@ int main(){
                                     strcpy(username[count], input_user);
                                     strcpy(password[count], input_pass);
                                     strcpy(plat[count], input_plat);
+                                    strcpy(temp_username, input_user);
+                                    strcpy(temp_password, input_pass);
+                                    strcpy(temp_plat, input_plat);
+                                    if(car_exist==true){
+                                        strcpy(slot[k], input_user);
+                                    }
                                     if(strcmp(username[count], input_user)==0 && strcmp(password[count], input_pass)==0 && strcmp(plat[count], input_plat)==0){
+                                    in_data = fopen("db_acc.txt", "w");
                                         for(i=1 ; i<=db_person ; i++){
-                                            in_data = fopen("db_acc.txt", "w");
                                                 fprintf(in_data, "%s#%s#%s\n", username[i],password[i], plat[i]);
-                                            fclose(in_data);
-                                            printf("Data succesfully edited");
                                         }
-                                    }   
+                                    fclose(in_data);
+                                        if(strcmp(slot[k], input_user)){
+                                        in_data = fopen("db_car.txt", "w");
+                                            for(i=1 ; i<=slot_count ; i++){
+                                                fprintf(in_data, "%s\n", slot[i]);
+                                            }
+                                        fclose(in_data);
+                                        }
+                                    }
+                                        printf("Data succesfully edited");
+                                        system("pause");
+                                        goto panel;
                                 }else if(exist==false){
                                     printf("Data is not found :(\n\n");
                                     system("pause");
