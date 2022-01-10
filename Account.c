@@ -233,7 +233,7 @@ int main(){
                     user_is_admin=true;
                 }
             system("cls");
-            printf("Fetching data"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
+            //printf("Fetching data"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
 
                     if (user_is_admin==false){
                         if(pass_exist==true && user_exist==true){
@@ -296,7 +296,7 @@ int main(){
                                 if(strcmp(temp_username, temp_input_user) == 0 && strcmp(temp_password, temp_input_pass) == 0){
                                     correct=true;
                                     system("cls");
-                                    printf("Loading"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
+                                    //printf("Loading"); delay(1); printf("."); delay(1); printf("."); delay(1); printf(".\n\n");
                                 break;
                                 }
                             }fclose(read);
@@ -313,6 +313,7 @@ int main(){
                                 car_exist=false;  
                                 char_only=false;
                                 db_person=0;
+                                input_space=false;
 
                                 read = fopen ("db_car.txt", "r");
                                 for(i=1 ; !feof(read) ; i++){
@@ -347,16 +348,18 @@ int main(){
                                     printf("Plat\t\t: %s\n", plat[count]);
                             
                                     printf("\n\n===Your New Data===\n\n");
-                                    printf("Username\t: "); scanf(" %[^\n]", input_user);
+                                    printf("Username\t: "); fflush(stdin); scanf("%[^\n]", input_user);
                                     word_count = strlen(input_user);
-                                    for(i=0 ; i<=word_count ; i++){
-                                        if(input_plat[i]==' '){
-                                            input_space=true;
-                                            break;
+                                        for(i=0 ; i<=word_count ; i++){
+                                            if( !(input_user[i]>='A' && input_user[i]<='Z') && !(input_user[i]>='a' && input_user[i]<='z') && !(input_user[i]>='0' && input_user[i]<='9') && !(input_user[i]=='\0') && (input_user[i]==' ')){
+                                                input_space=true;
+                                                break;
+                                            }
                                         }
-                                    }
                                     if (input_space==true){
-                                        printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
+                                        printf("%i", i);
+                                        printf("%s", input_user);
+                                        printf("Sorry, the username should not have a space.\nUse underscore( _ ) instead.\n");
                                         system ("pause");
                                         input_space=false;
                                         goto edit_data;
@@ -383,8 +386,8 @@ int main(){
                                                 break;
                                             }
                                         }
-                                    printf("Password\t: ");  scanf(" %[^\n]", input_pass);
-                                    printf("Plat\t\t: "); scanf(" %[^\n]", input_plat);
+                                    printf("Password\t: "); fflush(stdin); scanf("%[^\n]", input_pass);
+                                    printf("Plat\t\t: "); fflush(stdin); scanf("%[^\n]", input_plat);
                                         strupr(input_plat);
                                             word_count = strlen(input_plat);
                                                 for(i=0 ; i<=word_count ; i++){
@@ -471,7 +474,7 @@ int main(){
                         goto panel;
                     }
                     system("cls");
-                    printf("Inserting car "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
+                    //printf("Inserting car "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
                     if(slot_empty==false){
                         slot_count--;
                         printf("You already inputted your car at slot '%i'!\n", i);
@@ -512,7 +515,7 @@ int main(){
                             break;
                         }
                     }
-                    printf("Taking car out "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
+                    //printf("Taking car out "); delay(1); printf(". "); delay(1); printf(". "); delay(1); printf(". ");
                     system("cls");
                     if(slot_empty==false){
                             for(j=i ; j<=slot_count; j++){
@@ -581,7 +584,7 @@ int main(){
                     break;
 //case 5 LOG OUT==========================================================================================================================================================
                     case '5':
-                        printf("Logging out"); delay(1); printf(" ."); delay(1); printf(" ."); delay(1); printf(" .");
+                        //printf("Logging out"); delay(1); printf(" ."); delay(1); printf(" ."); delay(1); printf(" .");
                     break;
                     default:
                         printf("Please put a valid answer!!!\n\n");
