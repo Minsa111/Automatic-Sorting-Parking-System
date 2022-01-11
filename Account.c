@@ -30,6 +30,7 @@ bool input_space=false;
 bool logging=false;
 bool user_is_admin=false;
 bool car_exist=false;
+bool user_found=false;
 bool plat_found= false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
@@ -151,7 +152,7 @@ int main(){
                         }
   
             if (input_space==true){
-                printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
+                printf("Sorry, the username should not have a space.\nUse underscore( _ ) instead.");
                 system ("pause");
                 db_person--;
                 goto home;
@@ -346,9 +347,16 @@ int main(){
                                 input_space=false;
 
                                 read = fopen ("db_car.txt", "r");
-                                for(i=1 ; !feof(read) ; i++){
-                                    slot_count++;
-                                    fscanf(read, "%[^\n]\n", slot[i]);
+                                fseek (read, 0, SEEK_END);
+                                count = ftell(read);
+                                fclose(read);
+                                if(count>1){
+                                read = fopen ("db_car.txt", "r");
+                                    for(i=1 ; !feof(read) ; i++){
+                                        slot_count++;
+                                        fscanf(read, "%[^\n]\n", slot[i]);
+                                    }
+                                fclose(read);
                                 }
                                 for(i=k ; k<=slot_count ; k++){
                                     if(strcmp(temp_username,slot[k])==0){
@@ -356,7 +364,6 @@ int main(){
                                         break;
                                     }
                                 }
-                                fclose(read);
                                 read = fopen("db_acc.txt", "r");
                                     for(i=1 ; !feof(read) ; i++){
                                         db_person++;
@@ -489,18 +496,19 @@ int main(){
                     read = fopen("db_car.txt", "r");
                     fseek (read, 0, SEEK_END);
                     count = ftell(read);
+                    fclose(read);
                         if(count>0){
+                        read = fopen("db_car.txt", "r");                    
                             for(i=1 ; !feof(read) ; i++){
                                 slot_count++;
                                 fscanf(read, "%[^\n]\n", slot[i]);
                             }
+                        fclose(read);
                         }else{
                             inputted=false;
                         }
 
-                    fclose(read);
                     slot_empty=true;
-                    slot_count++;
                     if(slot_count<=20 && slot_count > 0){
                         for (i=1 ; i<=slot_count ; i++){
                             if (strcmp(slot[i], temp_username)==0){
@@ -523,6 +531,7 @@ int main(){
                         goto panel;
                     }else if(slot_empty==true){
                         system("cls");
+                        slot_count++;
                         strcpy(slot[slot_count], temp_username);
                         in_data = fopen("db_car.txt", "w");
                             for(i=1; i<=slot_count ; i++){
@@ -682,7 +691,7 @@ int main(){
                     }
                 }
                 if(exist==true){
-                    edit_admin:
+                    edit_admins:
                     count=i;
                     input_space=false; exist=false;
                     plat_found=false;
@@ -703,9 +712,9 @@ int main(){
                                         }
                                     }
                             if (input_space==true){
-                                printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
+                                printf("Sorry, the username should not have a space.\nUse underscore( _ ) instead.");
                                 system ("pause");
-                                goto edit_admin;
+                                goto edit_admins;
                             }
                             exist=false;
                             // nyari kalo username udah ada apa belum.
@@ -767,6 +776,8 @@ int main(){
                         }
                     fclose(in_data);
                 }else if(plat_found==true){
+                    edit_plat_admin:
+                    user_found=false;
                     system("cls");
                     for(i=1 ; i<=k ; i++){
                         printf("===Data found===");
@@ -775,6 +786,45 @@ int main(){
                         printf("Password\t: %s\n", password[acc[i]]);
                         printf("Plat\t\t: %s\n", plat[acc[i]]);
                     }
+                    printf("input the username that u wanted to edit: %s", input_user);
+                    for(i=1; i<=k ; i++){
+                        if(strcmp(input_user, username[acc[i]])==0){
+                            user_found=true;
+                            break;
+                        }
+                    }
+                    if (user_found==true){
+                        system("cls");
+                        printf("===Current Data===\n\n");
+                        printf("Username\t: %s", username[acc[i]]);
+                        printf("Password\t: %s", password[acc[i]]);
+                        printf("Plat\t\t: %s", plat[acc[i]]);
+                        printf("edit\n\n");
+                        scanf("New Username\t: %s", username[acc[i]]);
+                        scanf("New Password\t: %[^\n]", password[acc[i]]);
+                        scanf("New Plat\t\t: %[^\n]", plat[acc[i]]);
+                        in_data = fopen("db_acc.txt", "w");
+                            for(i=1 ; i<=db_person ; i++){
+                                fprintf(in_data, "%s#%s#%s\n", username[i],password[i], plat[i]);
+                            }
+                        fclose(in_data);
+                            if(strcmp(slot[k], input_user)){
+                            in_data = fopen("db_car.txt", "w");
+                            i=1;
+                                do{
+                                    fprintf(in_data, "%s\n", slot[i]);
+                                    i++;
+                                }while (i<=slot_count);
+                            fclose(in_data);
+                            }
+                        printf("Data succesfully changed");
+                        system("pause");
+                    }else if(user_found==false){
+                        printf("Please enter a valid answer\n\n");
+                        system("pause");
+                        goto edit_plat_admin;
+                    }
+                    
                 }else{
                     printf("No data found");
                     goto panel_admin;
