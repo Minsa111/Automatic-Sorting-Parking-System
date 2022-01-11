@@ -8,9 +8,9 @@
 int slot_count=0;
 int word_count=0;
 int db_person=0;
+int acc[30];
 char input[99];
 char slot['0'][99];
-char acc[99];
 char username['0'][99], password['0'][99], plat['0'][99];
 char temp_username[99], temp_password[99], temp_plat[99];
 char input_plat[99], input_user[99], input_pass[99];
@@ -30,6 +30,7 @@ bool input_space=false;
 bool logging=false;
 bool user_is_admin=false;
 bool car_exist=false;
+bool plat_found= false;
 int compare_user, compare_plat, compare_pass;
 int i ,j ,k ,count;
 FILE *in_data, *read, *admin_data;
@@ -496,7 +497,7 @@ int main(){
                         }else{
                             inputted=false;
                         }
-                        
+
                     fclose(read);
                     slot_empty=true;
                     slot_count++;
@@ -642,7 +643,7 @@ int main(){
 }
 //ADMIN LOGIN==========================================================================================================================
     void logged_admin(){
-        panel:
+        panel_admin:
         car_exist=false;
         system("cls");
         printf("Welcome handsome :D\n\n");
@@ -650,24 +651,42 @@ int main(){
         printf("1. Edit data\n2. Check data");
         switch(getch()){
             case '1':
+            edit_admin:
             exist=false;
-                db_person==0;
-                system("cls");
+            db_person=0; slot_count=0;
+            system("cls");
+
             read = fopen("db_acc.txt", "r");
+            for(i=1; !feof(read) ; i++){
+                slot_count++;
+                fscanf(read, "%[^\n]\n", slot[i]);
+            }
+            fclose(read);
+
+            read = fopen("db_car.txt", "r");
             for(i=1; !feof(read) ; i++){
                 db_person++;
                 fscanf(read, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }
             fclose(read);
+            k=1;
             printf("Insert username or plat number: "); scanf(" %[^\n]", input);
                 for(i=1; i<=db_person ; i++){
-                    if(strcmp(input,username[i])==0 || strcmp(input,plat[i])==0){
+                    if(strcmp(input,username[i])==0){
                         exist=true;
                         break;
+                    }else if(strcmp(input,plat[i])==0){
+                        acc[k]=i;
+                        k++;
+                        plat_found=true;
                     }
-                }if(exist==true)
+                }
+                if(exist==true){
+                    edit_admin:
                     count=i;
-                    edit_data:
+                    input_space=false; exist=false;
+                    plat_found=false;
+
                     system("cls");
                         printf("===Data found===\n\n");
                         printf("Username\t: %s\n", username[count]);
@@ -676,16 +695,17 @@ int main(){
                         
                         printf("\n\n===Edit Data===\n\n");
                             printf("Username\t: "); scanf(" %[^\n]", input_user);
-                            for(i=0 ; i<=count ; i++){
-                                if((input_plat[i]==32)){
-                                    input_space=true;
-                                    break;
-                                }
-                            }
+                                word_count = strlen(input_user);
+                                    for(i=0 ; i<=word_count ; i++){
+                                        if( !(input_user[i]>='A' && input_user[i]<='Z') && !(input_user[i]>='a' && input_user[i]<='z') && !(input_user[i]>='0' && input_user[i]<='9') && !(input_user[i]=='\0') && (input_user[i]==' ')){
+                                            input_space=true;
+                                            break;
+                                        }
+                                    }
                             if (input_space==true){
                                 printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
                                 system ("pause");
-                                goto edit_data;
+                                goto edit_admin;
                             }
                             exist=false;
                             // nyari kalo username udah ada apa belum.
@@ -695,17 +715,17 @@ int main(){
                                         break;
                                     }
                                 }
-                                if(exist==true){
+                                if(exist==false){
                                     printf("=== Sorry, username is not available ===");
                                     printf("\n\nDo you wish to try again?(y/n)");
                                     switch(getch()){
                                         case'y':
                                         case'Y':
-                                            goto edit_data;
+                                            goto edit_admin;
                                         break;
                                         case'n':
                                         case'N':
-                                            goto panel;
+                                            goto panel_admin;
                                         break;
                                     }
                                 }
@@ -726,16 +746,16 @@ int main(){
                                                 case 'Y':
                                                 case 'y':
                                                 system("cls");
-                                                    goto edit_data;
+                                                    goto edit_admin;
                                                 break;
                                                 case 'N':
                                                 case 'n':
-                                                    goto panel;
+                                                    goto panel_admin;
                                                 break;
                                                 default:
                                             printf("\n\nPlease enter a valid answer!");
                                             system("pause");
-                                        goto edit_data;
+                                        goto edit_admin;
                                         }
                                     }
                         strcpy(username[count], input_user);
@@ -746,6 +766,19 @@ int main(){
                             fprintf(in_data, "%s#%s#%s\n", username[i], &password[i], &plat[i]);
                         }
                     fclose(in_data);
+                }else if(plat_found==true){
+                    system("cls");
+                    for(i=1 ; i<=k ; i++){
+                        printf("===Data found===");
+                        printf("\n\n Data ==%i==\n",i);
+                        printf("Username\t: %s\n", username[acc[i]]);
+                        printf("Password\t: %s\n", password[acc[i]]);
+                        printf("Plat\t\t: %s\n", plat[acc[i]]);
+                    }
+                }else{
+                    printf("No data found");
+                    goto panel_admin;
+                }
             break;
         }
     }
