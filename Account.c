@@ -57,7 +57,7 @@ int main(){
     admin_data = fopen("admin.txt" , "r");
         fscanf(admin_data, "%[^#]#%[^\n]\n", admin, admin_pass);
     fclose(admin_data);
-
+//acc data
     in_data = fopen("db_acc.txt", "r");
         if (NULL != in_data){
             fseek (in_data, 0, SEEK_END);
@@ -81,22 +81,45 @@ int main(){
                 fscanf(in_data, "%[^#]#%[^#]#%[^\n]\n", username[i], password[i], plat[i]);
             }
         }fclose(in_data);
+        
+    // car data
+    exist=false;
 
+    in_data = fopen("db_car.txt", "r");
+        if (NULL != in_data){
+            fseek (in_data, 0, SEEK_END);
+            count = ftell(in_data);
+            exist = true;
+        }fclose(in_data);
 
+    if (exist == false){
+        in_data = fopen("db_car.txt", "w");
+            fseek (in_data, 0, SEEK_END);
+            count = ftell(in_data);
+        fclose (in_data);
+    }
     read = fopen("db_car.txt", "r");
+    if(count==0){
+        inputted=false;
+    }else if(count>0){
         for(i=1 ; !feof(read) ; i++){
             slot_count++;
             fscanf(read, "%[^\n]\n", slot[i]);
-        }fclose(read);
+        }
+    }
+        fclose(read);
+
     logging=false;
     exist=false;
     printf("===Welcome To car parking===");
+
     count = 20-slot_count;
-    if(count<1){
-        printf("\n\nNo parking slot available\n\n");
-    }else{
-        printf("\n\nCar slot available: %i\n\n", count);
-    }
+
+        if(count<1){
+            printf("\n\nNo parking slot available\n\n");
+        }else{
+            printf("\n\nCar slot available: %i\n\n", count);
+        }
     printf("Press '1' to Register.\nPress '2' to Login.\nPress '3' to Exit.");
     printf("\nInput : ");
     switch(getch()){
@@ -117,14 +140,15 @@ int main(){
                 printf("============================ ");
                 printf("\n\t== Register == ");
                 printf("\n============================ \n");
-                printf("\nEnter Username\t\t\t: "); scanf("%s", &input_user);
-
-            for(i=0 ; i<=count ; i++){
-                if((input_user[i]==32)){
-                    input_space=true;
-                    break;
-                }
-            }
+                printf("\nEnter Username\t\t\t: "); fflush(stdin); scanf("%[^\n]", input_user);
+                    word_count = strlen(input_user);
+                        for(i=0 ; i<=word_count ; i++){
+                            if( !(input_user[i]>='A' && input_user[i]<='Z') && !(input_user[i]>='a' && input_user[i]<='z') && !(input_user[i]>='0' && input_user[i]<='9') && !(input_user[i]=='\0') && (input_user[i]==' ')){
+                                input_space=true;
+                                break;
+                            }
+                        }
+  
             if (input_space==true){
                 printf("Sorry, the username should not have a space.\n Use underscore( _ ) instead.");
                 system ("pause");
@@ -151,6 +175,11 @@ int main(){
                         case'N':
                             db_person--;
                             goto home;
+                        break;
+                        default:
+                        printf("Please enter a valid answer\n");
+                        system("pause");
+                        goto home;
                         break;
                     }
                 }
@@ -384,6 +413,10 @@ int main(){
                                                 case'N':
                                                     goto panel;
                                                 break;
+                                                default :
+                                                printf("\n=== Please Input a valid answer!!! ===\n");
+                                                system("pause");
+                                                goto panel;
                                             }
                                         }
                                     printf("Password\t: "); fflush(stdin); scanf("%[^\n]", input_pass);
@@ -453,10 +486,17 @@ int main(){
                     case '2':
                     slot_count=0;
                     read = fopen("db_car.txt", "r");
-                        for(i=1 ; !feof(read) ; i++){
-                            slot_count++;
-                            fscanf(read, "%[^\n]\n", slot[i]);
+                    fseek (read, 0, SEEK_END);
+                    count = ftell(read);
+                        if(count>0){
+                            for(i=1 ; !feof(read) ; i++){
+                                slot_count++;
+                                fscanf(read, "%[^\n]\n", slot[i]);
+                            }
+                        }else{
+                            inputted=false;
                         }
+                        
                     fclose(read);
                     slot_empty=true;
                     slot_count++;
@@ -603,6 +643,7 @@ int main(){
 //ADMIN LOGIN==========================================================================================================================
     void logged_admin(){
         panel:
+        car_exist=false;
         system("cls");
         printf("Welcome handsome :D\n\n");
         printf("What do you want to do?\n");
