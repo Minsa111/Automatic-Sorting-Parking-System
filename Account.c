@@ -347,8 +347,8 @@ int main(){
                                 input_space=false;
 
                                 read = fopen ("db_car.txt", "r");
-                                fseek (read, 0, SEEK_END);
-                                count = ftell(read);
+                                    fseek (read, 0, SEEK_END);
+                                    count = ftell(read);
                                 fclose(read);
                                 if(count>1){
                                 read = fopen ("db_car.txt", "r");
@@ -357,12 +357,6 @@ int main(){
                                         fscanf(read, "%[^\n]\n", slot[i]);
                                     }
                                 fclose(read);
-                                }
-                                for(i=k ; k<=slot_count ; k++){
-                                    if(strcmp(temp_username,slot[k])==0){
-                                    car_exist=true;
-                                        break;
-                                    }
                                 }
                                 read = fopen("db_acc.txt", "r");
                                     for(i=1 ; !feof(read) ; i++){
@@ -456,12 +450,19 @@ int main(){
                                                 goto edit_data;
                                                 }
                                             }
+                                    for(k=1 ; k<=slot_count ; k++){
+                                        if(strcmp(temp_username,slot[k])==0){
+                                        car_exist=true;
+                                            break;
+                                        }
+                                    }
                                     strcpy(username[count], input_user);
                                     strcpy(password[count], input_pass);
                                     strcpy(plat[count], input_plat);
                                     strcpy(temp_username, input_user);
                                     strcpy(temp_password, input_pass);
                                     strcpy(temp_plat, input_plat);
+
                                     if(car_exist==true){
                                         strcpy(slot[k], input_user);
                                     }
@@ -471,7 +472,7 @@ int main(){
                                                 fprintf(in_data, "%s#%s#%s\n", username[i],password[i], plat[i]);
                                         }
                                     fclose(in_data);
-                                        if(strcmp(slot[k], input_user)){
+                                        if(strcmp(slot[k], input_user)==0){
                                         in_data = fopen("db_car.txt", "w");
                                             for(i=1 ; i<=slot_count ; i++){
                                                 fprintf(in_data, "%s\n", slot[i]);
