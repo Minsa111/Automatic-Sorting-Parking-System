@@ -707,7 +707,7 @@ int main(){
                         printf("Plat\t\t: %s\n", plat[count]);
                         
                         printf("\n\n===Edit Data===\n\n");
-                            printf("Username\t: "); scanf(" %[^\n]", input_user);
+                            printf("Username\t: "); fflush(stdin); scanf(" %[^\n]", input_user);
                                 word_count = strlen(input_user);
                                     for(i=0 ; i<=word_count ; i++){
                                         if( !(input_user[i]>='A' && input_user[i]<='Z') && !(input_user[i]>='a' && input_user[i]<='z') && !(input_user[i]>='0' && input_user[i]<='9') && !(input_user[i]=='\0') && (input_user[i]==' ')){
@@ -728,7 +728,7 @@ int main(){
                                         break;
                                     }
                                 }
-                                if(exist==false){
+                                if(exist==true){
                                     printf("=== Sorry, username is not available ===");
                                     printf("\n\nDo you wish to try again?(y/n)");
                                     switch(getch()){
@@ -742,8 +742,8 @@ int main(){
                                         break;
                                     }
                                 }
-                            printf("Password\t: ");scanf(" %[^\n]", input_pass);
-                            printf("Plat\t\t: ");scanf(" %[^\n]", input_plat);
+                            printf("Password\t: "); fflush(stdin); scanf(" %[^\n]", input_pass);
+                            printf("Plat\t\t: "); fflush(stdin); scanf(" %[^\n]", input_plat);
                                 strupr(input_plat);
                                     word_count = strlen(input_plat);
                                         for(i=0 ; i<=word_count ; i++){
@@ -771,11 +771,24 @@ int main(){
                                         goto edit_admin;
                                         }
                                     }
+                        for ( i = 1; i <=slot_count; i++){
+                            if(strcmp(slot[i], username[count])==0){
+                                strcpy(slot[i], input_user);
+                                in_data = fopen ("db_car.txt", "w");
+                                    for (i=1 ; i<=slot_count ; i++){
+                                        fprintf(in_data, "%s\n", slot[i]);                                
+                                    }
+                                fclose(in_data);
+                                break;
+                            }
+                        }
                         strcpy(username[count], input_user);
                         strcpy(password[count], input_pass);
                         strcpy(plat[count], input_plat);
+
+                        
                     in_data = fopen("db_acc.txt", "w");
-                        for(i=1; !feof(in_data) ; i++){
+                        for(i=1; i<=db_person ; i++){
                             fprintf(in_data, "%s#%s#%s\n", username[i], password[i], plat[i]);
                         }
                     fclose(in_data);
@@ -783,7 +796,7 @@ int main(){
                     system("pause");
                     goto panel_admin;
 
-
+//plat edit============================================================================================================================================================
                 }else if(plat_found==true){
                     edit_plat_admin:
                     j=0;
@@ -814,7 +827,7 @@ int main(){
                         printf("edit\n\n");
                         printf ("New Username\t: "); scanf("%s", &input_user);
                         printf ("New Password\t: "); scanf( " %[^\n]", input_pass);
-                        printf ("New Plat\t\t: "); scanf(" %[^\n]", input_plat);
+                        printf ("New Plat\t\t: "); scanf(" %[^\n]", input_plat); strupr(input_plat);
                         strcpy(temp_input_user, username[acc[i]]);
                         strcpy(username[acc[i]], input_user);
                         strcpy(password[acc[i]], input_pass);
