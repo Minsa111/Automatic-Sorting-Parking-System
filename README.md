@@ -1,6 +1,6 @@
    
-                                                             PARKING SYSTEM 
-                                                   University of Muhammadiyah Malang
+              PARKING SYSTEM 
+      University of Muhammadiyah Malang
      
       1. Moh Mumtaza Firdausy Syamsuddin_459
       2. Bahrul Ulum Fadhlur Rohman_462
