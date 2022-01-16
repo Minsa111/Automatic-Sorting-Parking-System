@@ -7,17 +7,17 @@
 
 void logged_user(); void logged_admin(); void delay();
 
-int compare_user, compare_plat, compare_pass, i ,j ,k ,count, curr_car;;
+int i ,j ,k ,count;
 int slot_count = 0, word_count = 0, db_person = 0;
 int acc[30];
 
 char slot['0'][99], username['0'][99], password['0'][99], plat['0'][99];
-char temp_username[99], temp_password[99], temp_plat[99], temp_input_plat[99], temp_input_user[99], temp_input_pass[99];;
-char input[99],input_plat[99], input_user[99], input_pass[99];
+char temp_username[99], temp_password[99], temp_plat[99], temp_input_plat[99], temp_input_user[99], temp_input_pass[99];
+char input[99], input_plat[99], input_user[99], input_pass[99];
 char admin[99], admin_pass[99];
 
-bool logged = false, logging = false, char_only = false, slot_empty = true;
-bool user_allow = false, user_exist = false, user_is_admin = false, pass_exist = false, car_exist=false;
+bool logging = false, char_only = false, slot_empty = true;
+bool user_exist = false, user_is_admin = false, pass_exist = false, car_exist = false;
 bool exist = false, correct = false;
 bool inputted = true, input_space = false;
 bool user_found = false, plat_found = false;
@@ -712,7 +712,7 @@ void logged_admin(){
                     switch(getch()){
                         case'y':
                         case'Y':
-                            goto edit_admin;
+                            goto edit_admins;
                             break;
                         case'n':
                         case'N':
@@ -778,8 +778,8 @@ void logged_admin(){
                 j = 0; user_found = false;
                 system("cls");
                 for(i = 1 ;i <= k; i++){
-                    printf("=== Data found ===\n\n");
-                    printf("\n== Data %i ==\n\n", i);
+                    printf("=== Data found ===\n");
+                    printf("\n= Data %i =\n\n", i);
                     printf("Username\t: %s\n", username[acc[i]]);
                     printf("Password\t: %s\n", password[acc[i]]);
                     printf("Plat\t\t: %s\n", plat[acc[i]]);
@@ -843,7 +843,7 @@ void logged_admin(){
                 }
                         
             }else{
-                printf("No data found");
+                printf("\n\nNo data found\n");
                 system("pause"); goto panel_admin;
             }
             break;
