@@ -34,7 +34,6 @@ void delay(int number_of_seconds){
 }
 
 int main(){
-    fclose(read);
     home :
     exist=false;
     system("cls");
