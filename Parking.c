@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <conio.h>
-#include <time.h>
-
 /*============================================
      === School Project ===                 ||
    Automatic Parking System                 ||
@@ -15,6 +8,13 @@
  * 4. Muhammad Gus Nadir_481                ||
                                             ||
 ============================================*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <conio.h>
+#include <time.h>
 
 void logged_user(); void logged_admin(); void delay();
 
@@ -57,8 +57,8 @@ int main(){
     //acc data
     in_data = fopen("db_acc.txt", "r");
     if (NULL != in_data){
-        fseek (in_data, 0, SEEK_END); //fseek() is used to move file pointer associated with a given file to a specific position.
-        count = ftell(in_data); //ftell() in C is used to find out the position of file pointer in the file with respect to starting of the file
+        fseek (in_data, 0, SEEK_END);
+        count = ftell(in_data); 
         exist = true;
     }fclose(in_data);
 
@@ -937,12 +937,3 @@ void logged_admin(){
             system("pause"); goto panel_admin;
     }
 }
-/*** School Project
- * Automatic Parking System
- * 
- * 1. Aminudin Muhibbullah
- * 2. Bahrul Ulum Fadhlur Rohman
- * 3. Moh Mumtaza Firdausy Syamsuddin
- * 4. Muhammad Gus Nadir
- * 
- ***/
