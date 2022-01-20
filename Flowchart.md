@@ -1,4 +1,3 @@
 # FLOWCHART PARKING SYSTEM
 
-Update : slot available menjadi output 
-![FLowchart Parking 2](https://user-images.githubusercontent.com/96825204/150051076-80e8b63f-5000-4e9a-a6e5-60fddecc8156.png)
+![Flowchart](https://user-images.githubusercontent.com/96825204/150247070-9754eda3-810a-4665-9f4f-34ed42e60281.jpg)
