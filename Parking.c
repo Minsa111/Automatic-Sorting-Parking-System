@@ -5,17 +5,16 @@
 #include <conio.h>
 #include <time.h>
 
-//============================================
-/*** ===School Project===                   ||
- * Automatic Parking System                 ||
- *                                          ||
- * 1. Aminudin Muhibbullah                  ||
- * 2. Bahrul Ulum Fadhlur Rohman            ||
- * 3. Moh Mumtaza Firdausy Syamsuddin       ||
- * 4. Muhammad Gus Nadir                    ||
- *                                          ||
- ***///                                     ||
-//============================================
+/*============================================
+     === School Project ===                 ||
+   Automatic Parking System                 ||
+                                            ||
+ * 1. Aminudin Muhibbullah_465              ||
+ * 2. Bahrul Ulum Fadhlur Rohman_462        ||
+ * 3. Moh Mumtaza Firdausy Syamsuddin_459   ||
+ * 4. Muhammad Gus Nadir_481                ||
+                                            ||
+============================================*/
 
 void logged_user(); void logged_admin(); void delay();
 
