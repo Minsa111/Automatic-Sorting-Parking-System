@@ -926,3 +926,12 @@ void logged_admin(){
             system("pause"); goto panel_admin;
     }
 }
+/*** School Project
+ * Automatic Parking System
+ * 
+ * 1. Aminudin Muhibbullah
+ * 2. Bahrul Ulum Fadhlur Rohman
+ * 3. Moh Mumtaza Firdausy Syamsuddin
+ * 4. Muhammad Gus Nadir
+ * 
+ ***/
